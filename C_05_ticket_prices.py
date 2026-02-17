@@ -56,7 +56,7 @@ The program will record the ticket sale and calculate the
 ticket cost and profit
 
 Once you have either sold all of the tickets or entered the 
-exit code (exit8), the program will display the ticket 
+exit code ('exit8'), the program will display the ticket 
 sales information and write the data to a text file.
 
 It will also choose one lucky ticket holder who wins the draw.
@@ -65,41 +65,43 @@ Their ticket is free.
     ''')
 
 # variables & lists
-max_tickets = 5
-tickets_sold = 0
 payment_ans = ('cash', 'credit')
+child_price = 7.50
+adult_price = 10.50
+senior_price = 6.50
+credit_surcharge = 0.05
 
 # main routine
-statement_generator("Mini-Movie Fundraiser", "🍿", 3)
-print()
-want_instructions = string_checker("Show instructions? ", 1 )
-if want_instructions == "yes":
-    instructions()
-print()
+while True:
+    print()
 
-while tickets_sold < max_tickets:
     name = not_blank("Name: ")
-
-    if name == "xxx":
-        break
-
     age = int_check("Age: ", 0, 120)
 
     if age < 12:
         print(f"{name} is too young")
         continue
-    elif age > 100:
+    elif 12 <= age < 16:
+        ticket_price = child_price
+    elif 16 <= age < 65:
+        ticket_price = adult_price
+    elif 65 <= age < 101:
+        ticket_price = adult_price
+    else:
         print(f"{name} is too old")
         continue
-    else:
-        pass
 
     pay_method = string_checker("Payment method: ", 2, payment_ans)
-    print(f"{name} has bought a ticket ({pay_method})")
 
-    tickets_sold +=1
+    if pay_method == "cash":
+        surcharge = 0
+    else:
+        surcharge = ticket_price * credit_surcharge
 
-if tickets_sold == max_tickets:
-    print(f"You have sold all the tickets ({max_tickets})")
-else:
-    print(f"You have sold {tickets_sold} / {max_tickets}")
+    total_pay = ticket_price + surcharge
+
+    print(f"{name}'s ticket cost ${ticket_price:.2f}, payed with {pay_method} "
+          f"so surcharge is ${surcharge:.2f}\n"
+          f"Total pay is ${total_pay:.2f}\n")
+
+
