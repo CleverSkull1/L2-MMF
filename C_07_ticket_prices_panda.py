@@ -58,7 +58,7 @@ The program will record the ticket sale and calculate the
 ticket cost and profit
 
 Once you have either sold all of the tickets or entered the 
-exit code (xxx), the program will display the ticket 
+exit code ('exit8'), the program will display the ticket 
 sales information and write the data to a text file.
 
 It will also choose one lucky ticket holder who wins the draw.
@@ -70,13 +70,12 @@ def currency(a):
     return "${:.2f}".format(a)
 
 # variables & lists
-max_tickets = 5
-tickets_sold = 0
 payment_ans = ('cash', 'credit')
 child_price = 7.50
 adult_price = 10.50
 senior_price = 6.50
 credit_surcharge = 0.05
+
 all_names = []
 all_ticket_costs = []
 all_surcharges = []
@@ -88,16 +87,10 @@ mini_movie_dict = {
 }
 
 # main routine
-statement_generator("Mini-Movie Fundraiser", "🍿", 3)
-print()
-want_instructions = string_checker("Show instructions? ", 1 )
-if want_instructions == "yes":
-    instructions()
-print()
+while True:
+    print()
 
-while tickets_sold < max_tickets:
     name = not_blank("Name: ")
-
     if name == "xxx":
         break
 
@@ -129,8 +122,6 @@ while tickets_sold < max_tickets:
     all_ticket_costs.append(ticket_price)
     all_surcharges.append(surcharge)
 
-    tickets_sold +=1
-
 mini_movie_frame = pandas.DataFrame(mini_movie_dict)
 
 mini_movie_frame['Total'] = mini_movie_frame['Ticket Price'] + mini_movie_frame['Surcharge']
@@ -146,8 +137,3 @@ for var_item in add_dollars:
 print(mini_movie_frame.to_string(index=False))
 print(f"\nTotal Paid: ${total_paid:.2f}")
 print(f"Total Profit: ${total_profit:.2f}")
-
-if tickets_sold == max_tickets:
-    print(f"You have sold all the tickets ({max_tickets})")
-else:
-    print(f"You have sold {tickets_sold} / {max_tickets}")
