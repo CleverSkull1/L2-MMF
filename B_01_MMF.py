@@ -1,4 +1,5 @@
 import pandas
+import random
 
 # functions
 def string_checker(question, num_letters=1, valid_ans=("yes", "no")):
@@ -46,9 +47,9 @@ def int_check(question, low, high):
             print(error)
 
 def instructions():
+    print()
     statement_generator("Instructions", "ℹ️", 1)
     print('''
-
 For each ticket holder enter:
 - Their name
 - Their age
@@ -62,9 +63,7 @@ exit code (xxx), the program will display the ticket
 sales information and write the data to a text file.
 
 It will also choose one lucky ticket holder who wins the draw.
-Their ticket is free.
-
-    ''')
+Their ticket is free. ''')
 
 def currency(a):
     return "${:.2f}".format(a)
@@ -89,14 +88,12 @@ mini_movie_dict = {
 
 # main routine
 statement_generator("Mini-Movie Fundraiser", "🍿", 3)
-print()
-want_instructions = string_checker("Show instructions? ", 1 )
+want_instructions = string_checker("\nShow instructions? ", 1 )
 if want_instructions == "yes":
     instructions()
-print()
 
 while tickets_sold < max_tickets:
-    name = not_blank("Name: ")
+    name = not_blank("\nName: ")
 
     if name == "xxx":
         break
@@ -129,7 +126,7 @@ while tickets_sold < max_tickets:
     all_ticket_costs.append(ticket_price)
     all_surcharges.append(surcharge)
 
-    tickets_sold +=1
+    tickets_sold += 1
 
 mini_movie_frame = pandas.DataFrame(mini_movie_dict)
 
@@ -139,6 +136,16 @@ mini_movie_frame['Profit'] = mini_movie_frame['Ticket Price'] - 5
 total_paid = mini_movie_frame['Total'].sum()
 total_profit = mini_movie_frame['Profit'].sum()
 
+winner = random.choice(all_names)
+
+winner_index = all_names.index(winner)
+print("winner", winner, "list pos", winner_index)
+
+winner_ticket_price = all_ticket_costs[winner_index]
+winner_surcharge = all_surcharges[winner_index]
+
+total_won = winner_ticket_price + winner_surcharge
+
 add_dollars = ['Ticket Price', 'Surcharge', 'Total', 'Profit']
 for var_item in add_dollars:
     mini_movie_frame[var_item] = mini_movie_frame[var_item].apply(currency)
@@ -147,7 +154,9 @@ print(mini_movie_frame.to_string(index=False))
 print(f"\nTotal Paid: ${total_paid:.2f}")
 print(f"Total Profit: ${total_profit:.2f}")
 
+print(f"\nThe lucky winner is {winner}. Their ticket worth ${total_won:.2f} is free!")
+
 if tickets_sold == max_tickets:
-    print(f"You have sold all the tickets ({max_tickets})")
+    print(f"\nYou have sold all the tickets ({max_tickets})")
 else:
-    print(f"You have sold {tickets_sold} / {max_tickets}")
+    print(f"\nYou have sold {tickets_sold} / {max_tickets}")
