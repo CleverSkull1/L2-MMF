@@ -2,7 +2,7 @@ import pandas
 import random
 
 # functions
-def string_checker(question, num_letters=1, valid_ans=("yes", "no")):
+def string_checker(question, num_letters = 1, valid_ans=("yes", "no")):
     """Checks that users enter a full word
      or the 'n' letters of a word from a list of valid responses"""
 
@@ -17,9 +17,9 @@ def string_checker(question, num_letters=1, valid_ans=("yes", "no")):
 
         print(f"Please choose an option from {valid_ans}")
 
-def statement_generator(statement, decoration, amount):
+def statement_generator(statement, decoration, amount = 3):
     """Emphasises headings by adding decoration at the start and end"""
-    print(f"{decoration * amount} {statement} {decoration * amount}")
+    return f"{decoration * amount} {statement} {decoration * amount}"
 
 def not_blank(question):
     """Checks that a user response is not blank"""
@@ -48,7 +48,7 @@ def int_check(question, low, high):
 
 def instructions():
     print()
-    statement_generator("Instructions", "ℹ️", 1)
+    print(statement_generator("Instructions", "ℹ️", 1))
     print('''
 For each ticket holder enter:
 - Their name
@@ -69,7 +69,7 @@ def currency(a):
     return "${:.2f}".format(a)
 
 # variables & lists
-max_tickets = 5
+max_tickets = 100
 tickets_sold = 0
 payment_ans = ('cash', 'credit')
 child_price = 7.50
@@ -87,7 +87,7 @@ mini_movie_dict = {
 }
 
 # main routine
-statement_generator("Mini-Movie Fundraiser", "🍿", 3)
+print(statement_generator("Mini-Movie Fundraiser", "🍿", 3))
 want_instructions = string_checker("\nShow instructions? ", 1 )
 if want_instructions == "yes":
     instructions()
@@ -139,24 +139,56 @@ total_profit = mini_movie_frame['Profit'].sum()
 winner = random.choice(all_names)
 
 winner_index = all_names.index(winner)
-print("winner", winner, "list pos", winner_index)
-
 winner_ticket_price = all_ticket_costs[winner_index]
 winner_surcharge = all_surcharges[winner_index]
 
-total_won = winner_ticket_price + winner_surcharge
+total_won = mini_movie_frame.at[winner_index, 'Total']
+profit_won = mini_movie_frame.at[winner_index, 'Profit']
 
 add_dollars = ['Ticket Price', 'Surcharge', 'Total', 'Profit']
 for var_item in add_dollars:
     mini_movie_frame[var_item] = mini_movie_frame[var_item].apply(currency)
 
-print(mini_movie_frame.to_string(index=False))
-print(f"\nTotal Paid: ${total_paid:.2f}")
-print(f"Total Profit: ${total_profit:.2f}")
+mini_movie_string = mini_movie_frame.to_string(index=False)
+total_paid_string = f"Total Paid: ${total_pay:.2f}"
+total_profit_string = f"Total Profit ${total_profit:.2f}"
 
-print(f"\nThe lucky winner is {winner}. Their ticket worth ${total_won:.2f} is free!")
+lucky_winner_string = f"\nThe lucky winner is {winner}. Their ticket worth ${total_won:.2f} was paid back!"
+final_total_paid_string = f"Total Paid is now ${total_paid - total_won:.2f}"
+final_profit_string = (f"Total Profit is now ${total_profit - profit_won:.2f}")
 
 if tickets_sold == max_tickets:
-    print(f"\nYou have sold all the tickets ({max_tickets})")
+    print(f"You have sold all the tickets ({max_tickets})")
 else:
-    print(f"\nYou have sold {tickets_sold} / {max_tickets}")
+    num_sold_string = statement_generator(f"You have sold {tickets_sold} / {max_tickets}", "-")
+
+heading_string = statement_generator("Mini Movie Fundraiser", "=")
+ticket_details_heading = statement_generator("Ticket Details", "-")
+raffle_heading = statement_generator("Raffle Winner", "-")
+adjusted_sales_heading = statement_generator("Adjusted Sales & Profit", "-")
+adjusted_explanation = (f"We have given away a ticket worth ${total_won:2f} which \nmeans our sales have decreased by ${total_won:.2f} and our \nprofit decreased by ${profit_won}")
+to_write = [heading_string, "\n",
+            ticket_details_heading,
+            mini_movie_string, "\n",
+            total_paid_string,
+            total_profit_string, "\n",
+            raffle_heading,
+            lucky_winner_string, "\n",
+            adjusted_sales_heading,
+            adjusted_explanation, "\n",
+            final_total_paid_string,
+            final_profit_string, "\n",
+            num_sold_string]
+
+print()
+for item in to_write:
+    print(item)
+
+file_name = "MMF_ticket_details"
+write_to = "{}.ticket".format(file_name)
+
+text_file = open(write_to, "w+")
+
+for item in to_write:
+    text_file.write(item)
+    text_file.write("/n")
